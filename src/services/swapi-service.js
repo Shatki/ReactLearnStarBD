@@ -50,7 +50,8 @@ export default class SwapiService {
             name: planet.name,
             population: planet.population,
             rotationPeriod: planet.rotation_period,
-            diameter: planet.diameter
+            diameter: planet.diameter,
+            climate: planet.climate
           }
     };
 
@@ -60,11 +61,11 @@ export default class SwapiService {
             name: spaceship.name,
             model: spaceship.model,
             manufacturer: spaceship.manufacturer,
-            costInCredits: spaceship.costInCredits,
+            costInCredits: spaceship.cost_in_credits,
             length: spaceship.length,
             crew: spaceship.crew,
             passengers: spaceship.passengers,
-            cargoCapacity: spaceship.cargoCapacity
+            cargoCapacity: spaceship.cargo_capacity
           }
     };
 
@@ -73,8 +74,10 @@ export default class SwapiService {
             id: SwapiService._extractId(person),
             name: person.name,
             gender: person.gender,
-            birthYear: person.birthYear,
-            eyeColor: person.eyeColor
+            birthYear: person.birth_year,
+            eyeColor: person.eye_color,
+            mass: person.mass,
+            height: person.height
         }
     }
 
