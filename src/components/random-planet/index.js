@@ -16,7 +16,6 @@ export default class RandomPlanet extends Component {
 
   constructor(props){
     super(props);
-
   }
 
   componentDidMount() {

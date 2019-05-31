@@ -6,42 +6,42 @@ import ErrorButton from '../error-button'
 import './style.css';
 
 
-export default class PersonDetails extends Component {
+export default class ItemDetail extends Component {
     swapiService = new SwapiService();
 
     state = {
-        person: null,
+        item: null,
         loading: true,
         error: null
     };
 
     componentDidMount() {
-        this.updatePerson();
+        this.updateItem();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.personId !== prevProps.personId){
-            this.updatePerson()
+        if (this.props.itemId !== prevProps.itemId) {
+            this.updateItem()
         }
     }
 
-    onPersonLoaded = (person)=>{
+    onItemLoaded = (item) => {
         this.setState({
-                person,
-                loading: false
-            })
+            item,
+            loading: false
+        })
     };
 
-    updatePerson =() =>{
-      this.setState({
-          loading:true
-      });
-      const { personId } = this.props;
-      if(!personId) return;
-      this.swapiService
-          .getPerson(personId)
-          .then(this.onPersonLoaded)
-          .catch(this.onError)
+    updateItem = () => {
+        this.setState({
+            loading: true
+        });
+        const {itemId} = this.props;
+        if (!itemId) return;
+        this.swapiService
+            .getPerson(itemId)
+            .then(this.onItemLoaded)
+            .catch(this.onError)
     };
 
     onError = (err) => {
@@ -52,20 +52,20 @@ export default class PersonDetails extends Component {
     };
 
     render() {
-        const {person, loading, error} = this.state;
+        const {item, loading, error} = this.state;
         const hasData = !(loading || error);
 
         const spinner = loading ? <Spinner/> : null;
-        const content = hasData ? <PersonView person={person}/> : null;
+        const content = hasData ? <ItemView item={item}/> : null;
         const errorMessage = error ? <ErrorIndicator/> : null;
 
 
-        if (!this.state.person) {
-            return <span>Select a person from the list</span>
-            }
+        if (!this.state.item) {
+            return <span>Select a item from the list</span>
+        }
 
         return (
-            <div className="person-details card">
+            <div className="item-detail card">
                 {spinner}
                 {content}
                 {errorMessage}
@@ -74,12 +74,11 @@ export default class PersonDetails extends Component {
     }
 }
 
-
-const PersonView = ({person}) => {
-    const {id, name, gender, birthYear, eyeColor} = person;
+const ItemView = ({item}) => {
+    const {id, name, gender, birthYear, eyeColor} = item;
     return (
         <React.Fragment>
-            <img className="person-image"
+            <img className="item-image"
                  src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`} alt="avatar"/>
 
             <div className="card-body">
@@ -98,7 +97,7 @@ const PersonView = ({person}) => {
                         <span>{eyeColor}</span>
                     </li>
                 </ul>
-                <ErrorButton />
+                <ErrorButton/>
             </div>
         </React.Fragment>
     )
