@@ -8,6 +8,9 @@ import ErrorIndicator from "../error-indicator";
 import PeoplePage from "../people-page";
 import SwapiService from "../../services/swapi-service";
 import ErrorBoundry from "../error-boundry"
+import Row from "../row";
+import ItemDetail, { Record } from "../item-detail";
+
 
 export default class App extends Component {
     swapiService = new SwapiService();
@@ -30,21 +33,32 @@ export default class App extends Component {
 
         const randomPlanet = this.state.showRandomPlanet ? <RandomPlanet/> : null;
 
+        const personDetail = (
+            <ItemDetail>
+                itemId={11}
+                getData={this.swapiService.getPerson}
+                getImageUrl={this.swapiService.getPersonImage}
+                <Record field="gender" label="Gender"/>
+                <Record field="eyeColor" label="Eye Color"/>
+            </ItemDetail>
+        );
+
+        const starshipDetail = (
+            <ItemDetail
+                itemId={5}
+                getData={this.swapiService.getStarship}
+                getImageUrl={this.swapiService.getStarshipImage}/>
+        );
+
         return (
             <ErrorBoundry>
                 <div className="stardb-app">
                     <Header/>
                     {randomPlanet}
 
-                    <div className="row mb2 button-row">
-                        <button
-                            className="toggle-planet btn btn-warning btn-lg"
-                            onClick={this.toggleRandomPlanet}>
-                            Toggle Random Planet
-                        </button>
-                        <ErrorButton/>
-                    </div>
-                    <PeoplePage/>
+                    <Row
+                        left={personDetail}
+                        right={starshipDetail}/>
                 </div>
             </ErrorBoundry>
         );

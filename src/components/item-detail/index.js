@@ -11,6 +11,7 @@ export default class ItemDetail extends Component {
 
     state = {
         item: null,
+        itemImageUrl: `https://starwars-visualguide.com/assets/img/characters/11.jpg`,
         loading: true,
         error: null
     };
@@ -33,13 +34,15 @@ export default class ItemDetail extends Component {
     };
 
     updateItem = () => {
-        this.setState({
-            loading: true
-        });
-        const {itemId} = this.props;
+        const { itemId, getData, getImageUrl } = this.props;
         if (!itemId) return;
-        this.swapiService
-            .getPerson(itemId)
+
+        this.setState({
+            loading: true,
+            itemImageUrl: getImageUrl(itemId)
+        });
+
+        getData(itemId)
             .then(this.onItemLoaded)
             .catch(this.onError)
     };
@@ -52,16 +55,19 @@ export default class ItemDetail extends Component {
     };
 
     render() {
-        const {item, loading, error} = this.state;
+        const {item, itemImageUrl,
+            loading, error} = this.state;
         const hasData = !(loading || error);
 
         const spinner = loading ? <Spinner/> : null;
-        const content = hasData ? <ItemView item={item}/> : null;
+        const content = hasData ? <ItemView item={item}
+                                            image={itemImageUrl}
+                                            children={this.props.children}/> : null;
         const errorMessage = error ? <ErrorIndicator/> : null;
 
 
         if (!this.state.item) {
-            return <span>Select a item from the list</span>
+            return <span>Select an item from the list</span>
         }
 
         return (
@@ -74,28 +80,31 @@ export default class ItemDetail extends Component {
     }
 }
 
-const ItemView = ({item}) => {
-    const {id, name, gender, birthYear, eyeColor} = item;
+const Record = ({item, field, label}) => {
+    return (
+        <li className="list-group-item">
+            <span className="term">{label}</span>
+            <span>{field}</span>
+        </li>
+    )
+};
+
+export {
+    Record
+}
+
+
+const ItemView = ({item, image, children}) => {
+    const { id, name, gender, birthYear, eyeColor } = item;
     return (
         <React.Fragment>
             <img className="item-image"
-                 src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`} alt="avatar"/>
+                 src={image} alt="avatar"/>
 
             <div className="card-body">
                 <h4>{name}</h4>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                        <span className="term">Gender</span>
-                        <span>{gender}</span>
-                    </li>
-                    <li className="list-group-item">
-                        <span className="term">BirthYear</span>
-                        <span>{birthYear}</span>
-                    </li>
-                    <li className="list-group-item">
-                        <span className="term">Eye Color</span>
-                        <span>{eyeColor}</span>
-                    </li>
+                    {children}
                 </ul>
                 <ErrorButton/>
             </div>
