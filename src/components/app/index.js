@@ -10,6 +10,7 @@ import SwapiService from "../../services/swapi-service";
 import ErrorBoundry from "../error-boundry"
 import Row from "../row";
 import ItemDetail, { Record } from "../item-detail";
+import ItemList from "../item-list"
 
 
 export default class App extends Component {
@@ -33,11 +34,22 @@ export default class App extends Component {
 
         const randomPlanet = this.state.showRandomPlanet ? <RandomPlanet/> : null;
 
+        const {
+            getPerson,
+            getAllPeople,
+            getStarship,
+            getAllStarships,
+            getPlanet,
+            getAllPlanets,
+            getPersonImage,
+            getStarshipImage,
+            getPlanetImage,} = this.swapiService;
+
         const personDetail = (
-            <ItemDetail>
+            <ItemDetail
                 itemId={11}
                 getData={this.swapiService.getPerson}
-                getImageUrl={this.swapiService.getPersonImage}
+                getImageUrl={this.swapiService.getPersonImage}>
                 <Record field="gender" label="Gender"/>
                 <Record field="eyeColor" label="Eye Color"/>
             </ItemDetail>
@@ -47,7 +59,11 @@ export default class App extends Component {
             <ItemDetail
                 itemId={5}
                 getData={this.swapiService.getStarship}
-                getImageUrl={this.swapiService.getStarshipImage}/>
+                getImageUrl={this.swapiService.getStarshipImage}>
+                <Record field="model" label="Model"/>
+                <Record field="length" label="Length"/>
+                <Record field="costInCredits" label="Cost"/>
+            </ItemDetail>
         );
 
         return (
@@ -60,6 +76,23 @@ export default class App extends Component {
                         left={personDetail}
                         right={starshipDetail}/>
                 </div>
+
+                <ItemList
+                    getData={getAllPeople}
+                    onItemSelected={() => {
+                    }}>
+
+                    {({name}) => <span>{name}</span>}
+                </ItemList>
+
+                <ItemList
+                    getData={getAllPlanets}
+                    onItemSelected={() => {
+                    }}>
+
+                    {({name}) => <span>{name}</span>}
+                </ItemList>
+
             </ErrorBoundry>
         );
     }
