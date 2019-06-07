@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import SwapiService from '../../services/swapi-service'
 import Spinner from '../spinner'
 import ErrorIndicator from "../random-planet";
 import ErrorButton from '../error-button'
@@ -7,11 +6,9 @@ import './style.css';
 
 
 export default class ItemDetail extends Component {
-    swapiService = new SwapiService();
-
     state = {
         item: null,
-        itemImageUrl: `https://starwars-visualguide.com/assets/img/characters/11.jpg`,
+        itemImageUrl: null,
         loading: true,
         error: null
     };
@@ -34,7 +31,7 @@ export default class ItemDetail extends Component {
     };
 
     updateItem = () => {
-        const { itemId, getData, getImageUrl } = this.props;
+        const {itemId, getData, getImageUrl} = this.props;
         if (!itemId) return;
 
         this.setState({
@@ -55,8 +52,10 @@ export default class ItemDetail extends Component {
     };
 
     render() {
-        const {item, itemImageUrl,
-            loading, error} = this.state;
+        const {
+            item, itemImageUrl,
+            loading, error
+        } = this.state;
         const hasData = !(loading || error);
 
         const spinner = loading ? <Spinner/> : null;
@@ -80,6 +79,27 @@ export default class ItemDetail extends Component {
     }
 }
 
+const ItemView = ({item, image, children}) => {
+    const {name} = item;
+    return (
+        <React.Fragment>
+            <img className="item-image"
+                 src={image} alt="preview"/>
+
+            <div className="card-body">
+                <h4>{name}</h4>
+                <ul className="list-group list-group-flush">
+                    {React.Children.map(children, (child) => {
+                        return React.cloneElement(child, {item});
+                    })
+                    }
+                </ul>
+                <ErrorButton/>
+            </div>
+        </React.Fragment>
+    )
+};
+
 const Record = ({item, field, label}) => {
     return (
         <li className="list-group-item">
@@ -92,26 +112,3 @@ const Record = ({item, field, label}) => {
 export {
     Record
 }
-
-
-const ItemView = ({item, image, children}) => {
-    const { id, name, gender, birthYear, eyeColor } = item;
-    return (
-        <React.Fragment>
-            <img className="item-image"
-                 src={image} alt="avatar"/>
-
-            <div className="card-body">
-                <h4>{name}</h4>
-                <ul className="list-group list-group-flush">
-                    {React.Children.map(children, (child, idx) => {
-                        return React.cloneElement(child, { item });
-                    })
-                    }
-                </ul>
-                <ErrorButton/>
-            </div>
-        </React.Fragment>
-    )
-};
-

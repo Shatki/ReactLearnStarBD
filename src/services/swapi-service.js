@@ -98,6 +98,7 @@ export default class SwapiService {
 
 const swapi = new SwapiService();
 
-swapi.getPerson(3).then((person)=>{
+swapi.getPerson(3)
+    .then((person)=>{
     console.log(person.name)
 });

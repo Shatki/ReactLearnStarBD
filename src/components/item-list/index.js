@@ -1,60 +1,28 @@
-import React, {Component} from 'react';
-import Spinner from '../spinner'
-
+import React from 'react';
 import './style.css';
 
-class ItemList extends Component {
-    render() {
-        //const items = this.renderItems(this.props.data);
-        
-        return (
-            <ul className="item-list list-group">
-                { this.props.items }
-            </ul>
-        );
-    }
-}
+const ItemList = (props) => {
 
-const withData = (View) => {
-    return class extends Component {
-        state = {
-            data: null
-        };
+  const { data, onItemSelected, children: renderLabel } = props;
 
-        componentDidMount() {
-            const { getData } = this.props;
+  const items = data.map((item) => {
+    const { id } = item;
+    const label = renderLabel(item);
 
-            getData()
-                .then((data) => {
-                    this.setState({ data })
-                })
-        }
+    return (
+      <li className="list-group-item"
+          key={id}
+          onClick={() => onItemSelected(id)}>
+        {label}
+      </li>
+    );
+  });
 
-        renderItems = (arr) => {
-            return arr.map((item) => {
-                const {id} = item;
-                //console.log('---------->', this.props.children);
-                const label = this.props.children(item);
-                return (
-                    <li key={id}
-                        onClick={() => this.props.onItemSelected(id)}
-                        className="list-group-item">
-                        {label}
-                    </li>
-                );
-
-            });
-        };
-
-        render() {
-            const { data } = this.state;
-
-            if (!data) {
-                return <Spinner/>;
-            }
-            return <View {...this.props} data={ data } />
-        }
-    }
+  return (
+    <ul className="item-list list-group">
+      {items}
+    </ul>
+  );
 };
 
-export default withData(ItemList);
+export default ItemList
