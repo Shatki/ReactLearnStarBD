@@ -4,26 +4,28 @@ import RandomPlanet from '../random-planet';
 import './style.css'
 import ErrorIndicator from "../error-indicator";
 import ErrorBoundry from "../error-boundry"
-import Row from "../row";
 import {SwapiServiceProvider} from "../sw-service-context";
 import SwapiService from "../../services/swapi-service";
-
-import {
-    PersonDetails,
-    PlanetDetails,
-    StarshipDetails,
-    PersonList,
-    PlanetList,
-    StarshipList
-} from '../sw-components'
+import DummySwapiService from "../../services/dummy-swapi-service"
+import { PeoplePage, PlanetPage, StarshipPage } from  '../pages'
 
 export default class App extends Component {
-
-    swapiService = new SwapiService();
-
     state = {
         showRandomPlanet: true,
-        hasError: false
+        hasError: false,
+        swapiService: new SwapiService()
+    };
+
+    onChangeService = ({swapiService}) => {
+        this.setState(({swapiService}) => {
+            const Service = swapiService instanceof SwapiService ? DummySwapiService : SwapiService;
+
+            console.log(Service.name);
+
+            return {
+                swapiService: new Service()
+            };
+        });
     };
 
     componentDidCatch(error, errorInfo) {
@@ -41,21 +43,12 @@ export default class App extends Component {
 
         return (
             <ErrorBoundry>
-                <SwapiServiceProvider value={this.swapiService}>
-                    <div className="stardb-app">
-                        <Header/>
-                        {randomPlanet}
-                    </div>
-
-                    <PersonDetails itemId={11}/>
-
-                    <PlanetDetails itemId={8}/>
-
-                    <StarshipDetails itemId={5}/>
-
-                    <PersonList/>
-                    <StarshipList/>
-                    <PlanetList/>
+                <SwapiServiceProvider value={this.state.swapiService}>
+                    <Header />
+                    <RandomPlanet />
+                    <PeoplePage />
+                    <PlanetPage />
+                    <StarshipPage />
                 </SwapiServiceProvider>
             </ErrorBoundry>
         );
